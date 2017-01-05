@@ -102,15 +102,15 @@ const observableMixin: ObservableFactory = createEvented.mixin({
 			}
 
 			const subscription = stateFrom
-			.observe(id)
-			.subscribe(
-				(state) => {
-					replaceState(this, state);
-				},
-				(err) => {
-					throw err;
-				}
-			);
+				.observe(id)
+				.subscribe(
+					(state) => {
+						replaceState(this, state);
+					},
+					(err) => {
+						throw err;
+					}
+				);
 
 			stateFrom.get(id).then((state) => {
 				replaceState(this, state);
@@ -133,17 +133,15 @@ const observableMixin: ObservableFactory = createEvented.mixin({
 				replaceState(this, state);
 			});
 		},
-		diffProperties(this: Observable, previousProperties: any) {
+		diffProperties(this: Observable, previousProperties: ObservableProperties) {
 			const observedState = observedStateMap.get(this);
 			const { properties: { id, stateFrom } } = this;
 
 			if (observedState) {
 				if (stateFrom !== previousProperties.stateFrom || id !== previousProperties.id) {
-					observedState.handle && observedState.handle.destroy();
+					observedState.handle.destroy();
 				}
 			}
-
-			return Object.keys(this.properties);
 		},
 		applyChangedProperties(this: Observable) {
 			this.observe();
